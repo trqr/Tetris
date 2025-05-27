@@ -71,15 +71,25 @@ function drawRdmBlock(){
 // //Keypress events
 document.addEventListener('keydown', (e) => {
     if (e.key === "ArrowLeft" || e.key === "q"){
-        if (!currentShape.blocks.find(block => block[0] < -8)){
+        const canMoveLeft = currentShape.blocks.every(block => {
+            if (block[0] < -8 )
+                return false;
+            return !landedBlocks.find(bloc => bloc[0] === block[0]-1 && bloc[1] === block[1])
+        })
+        if (canMoveLeft) {
             currentShape.blocks.forEach(block => {
-                block[0]-= 1;
-                draw()
-        });
+                    block[0]-= 1;
+                    draw();
+            });
         }
     }
     if (e.key === "ArrowRight" || e.key === "d"){
-        if (!currentShape.blocks.find(block => block[0] > 9)){
+        const canMoveRight = currentShape.blocks.every(block => {
+            if (block[0] > 9 )
+                return false;
+            return !landedBlocks.find(bloc => bloc[0] === block[0]+1 && bloc[1] === block[1])
+        })
+        if (canMoveRight) {
             currentShape.blocks.forEach(block => {
                     block[0]+= 1;
                     draw();
@@ -145,16 +155,10 @@ function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentShape.blocks.forEach(block => {
-        ctx.fillStyle = currentShape.color;
-        ctx.fillRect((block[0]* gridSize) + offsetX , (block[1] * gridSize), gridSize, gridSize);
-        ctx.strokeStyle = 'black';
-        ctx.strokeRect((block[0] * gridSize) + offsetX, (block[1] * gridSize), gridSize, gridSize);
+        drawBlock((block[0]* gridSize) + offsetX, (block[1] * gridSize), currentShape.color)
     })
 
     landedBlocks.forEach(block => {
-            ctx.fillStyle = "grey"
-            ctx.fillRect((block[0]* gridSize) + offsetX , (block[1] * gridSize), gridSize, gridSize);
-            ctx.strokeStyle = 'black';
-            ctx.strokeRect((block[0] * gridSize) + offsetX, (block[1] * gridSize) , gridSize, gridSize);
-        })
+        drawBlock((block[0]* gridSize) + offsetX, (block[1] * gridSize), "grey")
+    })
 }
