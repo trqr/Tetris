@@ -8,7 +8,7 @@ const heightTileCount = canvas.height / gridSize; // 30
 const offsetX = (widthTileCount * gridSize / 2) - 20;
 const offsetY = 0;
 let currentShape;
-let landedBlocks = [[0,29],[1,29],[2,29],[3,29],[4,29],[5,29],[6,29],[7,29]]
+let landedBlocks = []
 
 const startBtn = document.querySelector('#start-btn');
 
