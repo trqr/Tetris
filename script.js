@@ -13,6 +13,7 @@ let score = 0;
 let highscore = 0;
 let timeout = 400;
 let isGameOver = false;
+let isGameStarted = false;
 
 
 const startBtn = document.querySelector('#start-btn');
@@ -153,13 +154,12 @@ function gameLoop(){
     speeding();
     currentShape.blocks.forEach(block => {
         block[1]+= 1;
-        draw();
+        
     });
     checkColision();
     checkIfLanded();
     checkAndEraseLine();
     setTimeout(gameLoop, timeout);
-    draw();
 }
 
 function rotateShape(){
@@ -223,12 +223,15 @@ function startGame(){
     drawRdmBlock()
     landedBlocks = [];
     score = 0;
-    gameLoop();
+    if (!isGameStarted){
+        gameLoop();
+    }
+    isGameStarted = true;
     isGameOver = false;
 }
 
 function CheckIfGameOver(){
-    if (landedBlocks.find(block => block[1] === 0))
+    if (landedBlocks.find(block => block[1] === 1))
         isGameOver = true;
 }
 
@@ -248,6 +251,7 @@ function draw(){
     if (score > highscore){
         highscore = score;
         notif.classList.remove('is-hidden');
+        setTimeout(notif.classList.add('is-hidden'), 5000);
         highscoreSpan.innerText = `${highscore}`;
     }
 }
