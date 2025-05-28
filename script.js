@@ -9,8 +9,27 @@ const offsetX = (widthTileCount * gridSize / 2) - 20;
 const offsetY = 0;
 let currentShape;
 let landedBlocks = []
+let score = 0;
+let highscore = 0;
+let timeout = 400;
+let isGameOver = false;
+
 
 const startBtn = document.querySelector('#start-btn');
+const scoreSpan = document.querySelector('#score');
+const highscoreSpan = document.querySelector('#highscore');
+
+
+
+scoreSpan.innerText = `${score}`;
+
+scoreSpan.addEventListener('change', () => {
+    scoreSpan.innerText = score;
+    if (score > highscore){
+        highscore = score;
+        highscoreSpan.innerText = `${highscore}`;
+    }
+})
 
 
 
@@ -41,8 +60,21 @@ const tetrisShapes = {
 
 //init
 
-drawRdmBlock()
 
+function speeding(){
+    if (score >= 100)
+        timeout = 350;
+    if (score > 200)
+        timeout = 300;
+    if (score > 300)
+        timeout = 200;
+    if (score > 400)
+        timeout = 150;
+    if (score > 500)
+        timeout = 100;
+    if (score > 1000)
+        timeout = 50;
+}
 
 function drawBlock(x, y, color) {
   ctx.fillStyle = color;
@@ -66,50 +98,58 @@ function drawRdmBlock(){
 }
 
 
+startBtn.addEventListener('click', () => {
+    startGame();
+});
 
-startBtn.addEventListener('click', gameLoop())
+
 // //Keypress events
 document.addEventListener('keydown', (e) => {
-    if (e.key === "ArrowLeft" || e.key === "q"){
-        const canMoveLeft = currentShape.blocks.every(block => {
-            if (block[0] < -8 )
-                return false;
-            return !landedBlocks.find(bloc => bloc[0] === block[0]-1 && bloc[1] === block[1])
-        })
-        if (canMoveLeft) {
-            currentShape.blocks.forEach(block => {
-                    block[0]-= 1;
-                    draw();
-            });
+    if (!isGameOver) {
+        if (e.key === "ArrowLeft" || e.key === "q"){
+            const canMoveLeft = currentShape.blocks.every(block => {
+                if (block[0] < -8 )
+                    return false;
+                return !landedBlocks.find(bloc => bloc[0] === block[0]-1 && bloc[1] === block[1])
+            })
+            if (canMoveLeft) {
+                currentShape.blocks.forEach(block => {
+                        block[0]-= 1;
+                        draw();
+                });
+            }
         }
-    }
-    if (e.key === "ArrowRight" || e.key === "d"){
-        const canMoveRight = currentShape.blocks.every(block => {
-            if (block[0] > 9 )
-                return false;
-            return !landedBlocks.find(bloc => bloc[0] === block[0]+1 && bloc[1] === block[1])
-        })
-        if (canMoveRight) {
-            currentShape.blocks.forEach(block => {
-                    block[0]+= 1;
-                    draw();
-            });
+        if (e.key === "ArrowRight" || e.key === "d"){
+            const canMoveRight = currentShape.blocks.every(block => {
+                if (block[0] > 9 )
+                    return false;
+                return !landedBlocks.find(bloc => bloc[0] === block[0]+1 && bloc[1] === block[1])
+            })
+            if (canMoveRight) {
+                currentShape.blocks.forEach(block => {
+                        block[0]+= 1;
+                        draw();
+                });
+            }
         }
+        if (e.key === "ArrowDown" || e.key === "s"){
+            currentShape.blocks.forEach(block => {
+                block[1]+= 1;
+                checkColision();
+                checkIfLanded();
+                draw();
+            }); 
+        }
+        if (e.key === "ArrowUp" || e.key === "z")
+            rotateShape();
     }
-    if (e.key === "ArrowDown" || e.key === "s"){
-        currentShape.blocks.forEach(block => {
-            block[1]+= 1;
-            checkColision();
-            checkIfLanded();
-            draw();
-        }); 
-    }
-    if (e.key === "ArrowUp" || e.key === "z")
-        rotateShape();
 });
 
 
 function gameLoop(){
+    if (isGameOver) return;
+    CheckIfGameOver();
+    speeding();
     currentShape.blocks.forEach(block => {
         block[1]+= 1;
         draw();
@@ -117,7 +157,7 @@ function gameLoop(){
     checkColision();
     checkIfLanded();
     checkAndEraseLine();
-    setTimeout(gameLoop, 400);
+    setTimeout(gameLoop, timeout);
     draw();
 }
 
@@ -157,8 +197,11 @@ function checkColision(){
 }
 
 function checkAndEraseLine() {
+    let inARow = 0;
   for (let i = 1; i <= heightTileCount; i++) {
     if (landedBlocks.filter(block => block[1] === i).length >= widthTileCount) {
+        score += 20;
+        inARow++;
       landedBlocks = landedBlocks.filter(block => block[1] !== i);
       landedBlocks = landedBlocks.map(block => {
         if (block[1] < i) {
@@ -168,6 +211,23 @@ function checkAndEraseLine() {
       });
     }
   }
+  inARow === 4 ? score += 40 : score += 0;
+  inARow === 3 ? score += 20 : score += 0;
+  inARow === 2 ? score += 5 : score += 0;
+}
+
+function startGame(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawRdmBlock()
+    landedBlocks = [];
+    score = 301;
+    gameLoop();
+    isGameOver = false;
+}
+
+function CheckIfGameOver(){
+    if (landedBlocks.find(block => block[1] === 0))
+        isGameOver = true;
 }
 
 function draw(){
@@ -180,4 +240,11 @@ function draw(){
     landedBlocks.forEach(block => {
         drawBlock(block[0], block[1], "grey")
     })
+
+    scoreSpan.innerText = `${score}`;
+
+    if (score > highscore){
+        highscore = score;
+        highscoreSpan.innerText = `${highscore}`;
+    }
 }
