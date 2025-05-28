@@ -18,6 +18,7 @@ let isGameOver = false;
 const startBtn = document.querySelector('#start-btn');
 const scoreSpan = document.querySelector('#score');
 const highscoreSpan = document.querySelector('#highscore');
+const notif = document.querySelector('.notification');
 
 
 
@@ -245,6 +246,7 @@ function draw(){
 
     if (score > highscore){
         highscore = score;
+        notif.classList.remove('is-hidden');
         highscoreSpan.innerText = `${highscore}`;
     }
 }
