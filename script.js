@@ -220,7 +220,7 @@ function startGame(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawRdmBlock()
     landedBlocks = [];
-    score = 301;
+    score = 0;
     gameLoop();
     isGameOver = false;
 }
