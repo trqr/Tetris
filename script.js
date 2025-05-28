@@ -219,6 +219,7 @@ function checkAndEraseLine() {
 
 function startGame(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    timeout = 400;
     drawRdmBlock()
     landedBlocks = [];
     score = 0;

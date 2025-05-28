@@ -8,6 +8,10 @@
     margin: 10px;
 }
 
+.title {
+    margin: 10px;
+}
+
 body {
     display: flex;
     flex-direction: column;
