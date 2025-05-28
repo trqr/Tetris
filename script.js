@@ -42,13 +42,13 @@ const tetrisShapes = {
 //init
 
 drawRdmBlock()
-startBtn.addEventListener('click', gameLoop())
+
 
 function drawBlock(x, y, color) {
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, gridSize, gridSize);
+  ctx.fillRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
   ctx.strokeStyle = 'black';
-  ctx.strokeRect(x, y, gridSize, gridSize);
+  ctx.strokeRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
 }
 
 function drawRdmBlock(){
@@ -59,7 +59,7 @@ function drawRdmBlock(){
     const shape = tetrisShapes[rdmKey];
 
     for (const [x, y] of shape.blocks){
-        drawBlock(offsetX + x * gridSize, offsetY + y * gridSize, shape.color);
+        drawBlock(x,y, shape.color);
     }
 
     currentShape = structuredClone(shape);
@@ -67,7 +67,7 @@ function drawRdmBlock(){
 
 
 
-
+startBtn.addEventListener('click', gameLoop())
 // //Keypress events
 document.addEventListener('keydown', (e) => {
     if (e.key === "ArrowLeft" || e.key === "q"){
@@ -104,6 +104,8 @@ document.addEventListener('keydown', (e) => {
             draw();
         }); 
     }
+    if (e.key === "ArrowUp" || e.key === "z")
+        rotateShape();
 });
 
 
@@ -118,6 +120,23 @@ function gameLoop(){
     setTimeout(gameLoop, 400);
     draw();
 }
+
+function rotateShape(){
+    
+    const averageX = currentShape.blocks.reduce((sum, block) => sum + block[0], 0) / currentShape.blocks.length;
+    const averageY = currentShape.blocks.reduce((sum, block) => sum + block[1], 0) / currentShape.blocks.length;
+
+    currentShape.blocks = currentShape.blocks.map(([x, y]) => {
+    const dx = x - averageX;
+    const dy = y - averageY;
+
+    const rotatedX = -dy;
+    const rotatedY = dx;
+
+    return [Math.round(rotatedX + averageX), Math.round(rotatedY + averageY)]
+    })
+}
+
 
 function checkIfLanded(){
     if (currentShape.blocks.find((block => block[1] === heightTileCount - 1))){
@@ -155,10 +174,10 @@ function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentShape.blocks.forEach(block => {
-        drawBlock((block[0]* gridSize) + offsetX, (block[1] * gridSize), currentShape.color)
+        drawBlock(block[0], block[1], currentShape.color)
     })
 
     landedBlocks.forEach(block => {
-        drawBlock((block[0]* gridSize) + offsetX, (block[1] * gridSize), "grey")
+        drawBlock(block[0], block[1], "grey")
     })
 }
