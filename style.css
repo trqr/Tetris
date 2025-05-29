@@ -4,6 +4,10 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
 }
 
+#prev-canvas {
+    background-color: rgb(196, 190, 183);
+}
+
 .buttons {
     margin: 10px;
 }

@@ -1,5 +1,7 @@
 const canvas = document.getElementById('game-canvas');
+const prevCanvas = document.getElementById('prev-canvas')
 const ctx = canvas.getContext('2d');
+const prevCtx = prevCanvas.getContext('2d');
 
 
 const gridSize = 20;
@@ -78,11 +80,11 @@ function speeding(){
         timeout = 50;
 }
 
-function drawBlock(x, y, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
-  ctx.strokeStyle = 'black';
-  ctx.strokeRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
+function drawBlock(canvas, x, y, color) {
+  canvas.fillStyle = color;
+  canvas.fillRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
+  canvas.strokeStyle = 'black';
+  canvas.strokeRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
 }
 
 function drawRdmBlock(){
@@ -93,7 +95,7 @@ function drawRdmBlock(){
     const shape = tetrisShapes[rdmKey];
 
     for (const [x, y] of shape.blocks){
-        drawBlock(x,y, shape.color);
+        drawBlock(ctx, x,y, shape.color);
     }
 
     currentShape = structuredClone(shape);
@@ -160,6 +162,8 @@ function gameLoop(){
     checkIfLanded();
     checkAndEraseLine();
     setTimeout(gameLoop, timeout);
+    draw();
+    drawInPreview();
 }
 
 function rotateShape(){
@@ -239,11 +243,11 @@ function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentShape.blocks.forEach(block => {
-        drawBlock(block[0], block[1], currentShape.color)
+        drawBlock(ctx, block[0], block[1], currentShape.color)
     })
 
     landedBlocks.forEach(block => {
-        drawBlock(block[0], block[1], "grey")
+        drawBlock(ctx, block[0], block[1], "grey")
     })
 
     scoreSpan.innerText = `${score}`;
@@ -251,7 +255,20 @@ function draw(){
     if (score > highscore){
         highscore = score;
         notif.classList.remove('is-hidden');
-        setTimeout(notif.classList.add('is-hidden'), 5000);
+        setTimeout(() => {
+            notif.classList.add('is-hidden');
+        }, 5000);
         highscoreSpan.innerText = `${highscore}`;
     }
+}
+
+function drawInPreview(){
+    prevCtx.clearRect(0, 0, canvas.width, canvas.height);
+    const previewShape = structuredClone(currentShape)
+    previewShape.blocks = currentShape.blocks.map(block => [...block]);
+
+        previewShape.blocks.forEach(block => {
+        drawBlock(prevCtx, block[0], block[1], previewShape.color)
+        console.log(block[0], block[1])
+    })
 }
