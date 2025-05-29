@@ -10,10 +10,16 @@
 
 #prev-canvas {
     background-color: rgb(196, 190, 183);
+    width: 100px;
+    margin: 0 auto;
+    margin-bottom: 50px;
 }
 
 #stock-canvas {
     background-color: rgb(196, 190, 183);
+    width: 100px;
+    margin: 0 auto;
+    margin-bottom: 50px;
 }
 
 .mid-bar {
@@ -23,7 +29,7 @@
 }
 
 .right-side-bar {
-    width: 20%;
+    width: 200px;
     margin: 0 10px;
     display: flex;
     flex-direction: column;
@@ -31,11 +37,12 @@
 }
 
 .left-side-bar {
-    width: 20%;
+    width: 200px;
     margin: 0 10px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
+    flex-wrap: nowrap;
 }
 
 .buttons {
