@@ -1,15 +1,22 @@
+.lescanvas {
+    position: relative;
+}
+
 #game-canvas {
     background-color: rgb(196, 190, 183);
-    border: 2px solid black;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
 }
 
 #prev-canvas {
     background-color: rgb(196, 190, 183);
+    position: absolute;
+    right: -100px;
+    z-index: 10;
 }
 
 .buttons {
     margin: 10px;
+    z-index: 3;
 }
 
 .title {
@@ -21,4 +28,18 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.game-over {
+    filter:brightness(0.4);
+    border: 4px solid red;
+    content:normal;
+}
+
+.buttons-when-game-over {
+    transform: translateY(-200px);
+    background-color: grey;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all ease 0.8s;
 }

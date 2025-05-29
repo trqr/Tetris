@@ -25,6 +25,7 @@ const startBtn = document.querySelector('#start-btn');
 const scoreSpan = document.querySelector('#score');
 const highscoreSpan = document.querySelector('#highscore');
 const notif = document.querySelector('.notification');
+const buttons = document.querySelector('.buttons');
 
 
 
@@ -235,16 +236,25 @@ function startGame(){
     previewShape = drawRdmBlock(prevCtx, 15, 15);
     landedBlocks = [];
     score = 0;
+    isGameOver = false;
+    canvas.classList.remove("game-over");
+    buttons.classList.remove('buttons-when-game-over');
     if (!isGameStarted){
         gameLoop();
     }
     isGameStarted = true;
-    isGameOver = false;
+
 }
 
 function CheckIfGameOver(){
-    if (landedBlocks.find(block => block[1] === 1))
+    if (landedBlocks.find(block => block[1] === 1)){
         isGameOver = true;
+        isGameStarted = false;
+        canvas.classList.add("game-over");
+        buttons.classList.add('buttons-when-game-over');
+    }
+        
+    
 }
 
 function draw(){
