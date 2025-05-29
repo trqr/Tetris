@@ -7,9 +7,12 @@ const prevCtx = prevCanvas.getContext('2d');
 const gridSize = 20;
 const widthTileCount = canvas.width / gridSize; // 20
 const heightTileCount = canvas.height / gridSize; // 30
+const widthTileCountPrev = prevCanvas.width / gridSize;
+const heightTileCountPrev = prevCanvas.height / gridSize;
 const offsetX = (widthTileCount * gridSize / 2) - 20;
 const offsetY = 0;
 let currentShape;
+let previewShape;
 let landedBlocks = []
 let score = 0;
 let highscore = 0;
@@ -80,14 +83,14 @@ function speeding(){
         timeout = 50;
 }
 
-function drawBlock(canvas, x, y, color) {
+function drawBlock(canvas, x, y, offsetX, offsetY, color) {
   canvas.fillStyle = color;
   canvas.fillRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
   canvas.strokeStyle = 'black';
   canvas.strokeRect((x * gridSize) + offsetX, (y * gridSize) + offsetY, gridSize, gridSize);
 }
 
-function drawRdmBlock(){
+function drawRdmBlock(canvas, offsetX, offsetY){
     const keysArray = Object.keys(tetrisShapes)
     const rdmNb = Math.floor(Math.random() * keysArray.length);
     const rdmKey = keysArray[rdmNb];
@@ -95,10 +98,10 @@ function drawRdmBlock(){
     const shape = tetrisShapes[rdmKey];
 
     for (const [x, y] of shape.blocks){
-        drawBlock(ctx, x,y, shape.color);
+        drawBlock(canvas, x,y, offsetX, offsetY, shape.color);
     }
 
-    currentShape = structuredClone(shape);
+    return structuredClone(shape);
 }
 
 
@@ -163,7 +166,6 @@ function gameLoop(){
     checkAndEraseLine();
     setTimeout(gameLoop, timeout);
     draw();
-    drawInPreview();
 }
 
 function rotateShape(){
@@ -186,7 +188,9 @@ function rotateShape(){
 function checkIfLanded(){
     if (currentShape.blocks.find((block => block[1] === heightTileCount - 1))){
         currentShape.blocks.forEach(block => landedBlocks.push(block));
-        drawRdmBlock();
+        currentShape = structuredClone(previewShape);
+        prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
+        previewShape = drawRdmBlock(prevCtx, 15, 15);
     }
     
 }
@@ -195,7 +199,9 @@ function checkColision(){
     for (let i =0; i < currentShape.blocks.length; i++){
         if (landedBlocks.find(bloc => (bloc[0] === currentShape.blocks[i][0]) && (bloc[1] === currentShape.blocks[i][1] + 1))){
             currentShape.blocks.forEach(block => landedBlocks.push(block));
-            drawRdmBlock();
+            currentShape = structuredClone(previewShape);
+            prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
+            previewShape = drawRdmBlock(prevCtx, 15, 15);
             break;
         }
     }
@@ -224,7 +230,9 @@ function checkAndEraseLine() {
 function startGame(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     timeout = 400;
-    drawRdmBlock()
+    currentShape = drawRdmBlock(ctx, offsetX, offsetY);
+    prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
+    previewShape = drawRdmBlock(prevCtx, 15, 15);
     landedBlocks = [];
     score = 0;
     if (!isGameStarted){
@@ -243,11 +251,11 @@ function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentShape.blocks.forEach(block => {
-        drawBlock(ctx, block[0], block[1], currentShape.color)
+        drawBlock(ctx, block[0], block[1], offsetX, offsetY, currentShape.color)
     })
 
     landedBlocks.forEach(block => {
-        drawBlock(ctx, block[0], block[1], "grey")
+        drawBlock(ctx, block[0], block[1], offsetX, offsetY, "grey")
     })
 
     scoreSpan.innerText = `${score}`;
@@ -260,15 +268,4 @@ function draw(){
         }, 5000);
         highscoreSpan.innerText = `${highscore}`;
     }
-}
-
-function drawInPreview(){
-    prevCtx.clearRect(0, 0, canvas.width, canvas.height);
-    const previewShape = structuredClone(currentShape)
-    previewShape.blocks = currentShape.blocks.map(block => [...block]);
-
-        previewShape.blocks.forEach(block => {
-        drawBlock(prevCtx, block[0], block[1], previewShape.color)
-        console.log(block[0], block[1])
-    })
 }
