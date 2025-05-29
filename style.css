@@ -1,5 +1,6 @@
-.lescanvas {
-    position: relative;
+.main-container {
+    display: flex;
+    justify-content: center;
 }
 
 #game-canvas {
@@ -9,14 +10,38 @@
 
 #prev-canvas {
     background-color: rgb(196, 190, 183);
-    position: absolute;
-    right: -100px;
-    z-index: 10;
+}
+
+#stock-canvas {
+    background-color: rgb(196, 190, 183);
+}
+
+.mid-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.right-side-bar {
+    width: 20%;
+    margin: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.left-side-bar {
+    width: 20%;
+    margin: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .buttons {
     margin: 10px;
     z-index: 3;
+    transition: all ease 0.8s;
 }
 
 .title {
@@ -41,5 +66,4 @@ body {
     background-color: grey;
     padding: 10px;
     border-radius: 10px;
-    transition: all ease 0.8s;
 }

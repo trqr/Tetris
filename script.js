@@ -1,7 +1,9 @@
 const canvas = document.getElementById('game-canvas');
-const prevCanvas = document.getElementById('prev-canvas')
+const prevCanvas = document.getElementById('prev-canvas');
+const stockCanvas = document.getElementById('stock-canvas');
 const ctx = canvas.getContext('2d');
 const prevCtx = prevCanvas.getContext('2d');
+const stockCtx = stockCanvas.getContext('2d');
 
 
 const gridSize = 20;
@@ -13,9 +15,11 @@ const offsetX = (widthTileCount * gridSize / 2) - 20;
 const offsetY = 0;
 let currentShape;
 let previewShape;
+let stockedShape;
 let landedBlocks = []
 let score = 0;
 let highscore = 0;
+let lines = 0;
 let timeout = 400;
 let isGameOver = false;
 let isGameStarted = false;
@@ -24,6 +28,7 @@ let isGameStarted = false;
 const startBtn = document.querySelector('#start-btn');
 const scoreSpan = document.querySelector('#score');
 const highscoreSpan = document.querySelector('#highscore');
+const linesSpan = document.querySelector('.linesSpan');
 const notif = document.querySelector('.notification');
 const buttons = document.querySelector('.buttons');
 
@@ -150,6 +155,8 @@ document.addEventListener('keydown', (e) => {
         }
         if (e.key === "ArrowUp" || e.key === "z")
             rotateShape();
+        if (e.key === "e")
+            stockingShape();
     }
 });
 
@@ -189,9 +196,7 @@ function rotateShape(){
 function checkIfLanded(){
     if (currentShape.blocks.find((block => block[1] === heightTileCount - 1))){
         currentShape.blocks.forEach(block => landedBlocks.push(block));
-        currentShape = structuredClone(previewShape);
-        prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
-        previewShape = drawRdmBlock(prevCtx, 15, 15);
+        generateNewPreviewBlockAndCurrent();
     }
     
 }
@@ -200,12 +205,35 @@ function checkColision(){
     for (let i =0; i < currentShape.blocks.length; i++){
         if (landedBlocks.find(bloc => (bloc[0] === currentShape.blocks[i][0]) && (bloc[1] === currentShape.blocks[i][1] + 1))){
             currentShape.blocks.forEach(block => landedBlocks.push(block));
-            currentShape = structuredClone(previewShape);
-            prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
-            previewShape = drawRdmBlock(prevCtx, 15, 15);
+            generateNewPreviewBlockAndCurrent();
             break;
         }
     }
+}
+
+function generateNewPreviewBlockAndCurrent(){
+    currentShape = structuredClone(previewShape);
+    prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
+    previewShape = drawRdmBlock(prevCtx, 15, 15);
+}
+
+function stockingShape(){
+    if (stockedShape){
+        let temp = structuredClone(stockedShape);
+        stockedShape = structuredClone(currentShape);
+        const originalShapeBlocks = (Object.values(tetrisShapes).find(name => name.color === currentShape.color)).blocks
+        stockedShape.blocks = [...originalShapeBlocks]
+        currentShape = structuredClone(temp);
+    } else {
+        stockedShape = structuredClone(currentShape);
+        const originalShapeBlocks = (Object.values(tetrisShapes).find(name => name.color === currentShape.color)).blocks
+        stockedShape.blocks = [...originalShapeBlocks]
+        generateNewPreviewBlockAndCurrent();
+    }
+    stockCtx.clearRect(0, 0, stockCanvas.width, stockCanvas.height);
+    stockedShape.blocks.forEach(block => {
+        drawBlock(stockCtx, block[0], block[1], 15, 15, stockedShape.color)
+    })
 }
 
 function checkAndEraseLine() {
@@ -213,6 +241,7 @@ function checkAndEraseLine() {
   for (let i = 1; i <= heightTileCount; i++) {
     if (landedBlocks.filter(block => block[1] === i).length >= widthTileCount) {
         score += 20;
+        lines++;
         inARow++;
       landedBlocks = landedBlocks.filter(block => block[1] !== i);
       landedBlocks = landedBlocks.map(block => {
@@ -234,6 +263,7 @@ function startGame(){
     currentShape = drawRdmBlock(ctx, offsetX, offsetY);
     prevCtx.clearRect(0, 0, prevCanvas.width, prevCanvas.height);
     previewShape = drawRdmBlock(prevCtx, 15, 15);
+    stockCtx.clearRect(0, 0, stockCanvas.width, stockCanvas.height);
     landedBlocks = [];
     score = 0;
     isGameOver = false;
@@ -278,4 +308,6 @@ function draw(){
         }, 5000);
         highscoreSpan.innerText = `${highscore}`;
     }
+
+    linesSpan.innerText = `${lines}`
 }
