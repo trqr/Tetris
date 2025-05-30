@@ -146,12 +146,12 @@ document.addEventListener('keydown', (e) => {
             }
         }
         if (e.key === "ArrowDown" || e.key === "s"){
+            checkColision();
+            checkIfLanded();
             currentShape.blocks.forEach(block => {
                 block[1]+= 1;
-                checkColision();
-                checkIfLanded();
-                draw();
             }); 
+            draw();
         }
         if (e.key === "ArrowUp" || e.key === "z")
             rotateShape();
@@ -172,7 +172,6 @@ function gameLoop(){
         block[1]+= 1;
         
     });
-
     setTimeout(gameLoop, timeout);
     draw();
 }
@@ -237,20 +236,30 @@ function stockingShape(){
     })
 }
 
+function EraseLine(i){
+    landedBlocks = landedBlocks.filter(block => block[1] !== i);
+    landedBlocks = landedBlocks.map(block => {
+            if (block[1] < i) {
+            return [block[0], block[1] + 1];
+            }   
+            return block;
+        });
+}
+
 function checkAndEraseLine() {
     let inARow = 0;
   for (let i = 1; i <= heightTileCount; i++) {
     if (landedBlocks.filter(block => block[1] === i).length >= widthTileCount) {
+        const showCompletedLine = setInterval(() => {
+            landedBlocks.filter(block => block[1] === i).forEach(block => drawBlock(ctx, block[0], block[1], offsetX, offsetY, "yellow"))
+        }, 50)
+        setTimeout(() => {
+            clearInterval(showCompletedLine)
+        }, 200);
         score += 20;
         lines++;
         inARow++;
-      landedBlocks = landedBlocks.filter(block => block[1] !== i);
-      landedBlocks = landedBlocks.map(block => {
-        if (block[1] < i) {
-          return [block[0], block[1] + 1];
-        }   
-        return block;
-      });
+        setTimeout(() => EraseLine(i), 200 );
     }
   }
   inARow === 4 ? score += 40 : score += 0;
