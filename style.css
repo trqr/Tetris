@@ -71,6 +71,7 @@ body {
 .buttons-when-game-over {
     transform: translateY(-200px);
     background-color: grey;
+    color: black;
     padding: 10px;
     border-radius: 10px;
 }

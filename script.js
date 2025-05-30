@@ -165,13 +165,14 @@ function gameLoop(){
     if (isGameOver) return;
     CheckIfGameOver();
     speeding();
+    checkColision();
+    checkIfLanded();
+    checkAndEraseLine();
     currentShape.blocks.forEach(block => {
         block[1]+= 1;
         
     });
-    checkColision();
-    checkIfLanded();
-    checkAndEraseLine();
+
     setTimeout(gameLoop, timeout);
     draw();
 }
