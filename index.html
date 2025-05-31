@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="./style.css">
     <script src="./script.js" defer></script>
@@ -13,12 +14,14 @@
     <div class="main-container">
         <div class="left-side-bar">
             <canvas id="stock-canvas" width="90" height="90"></canvas>
-            <span>Z : rotate</span>
-            <span>E : stock</span>
-            <span>⬅️ ou q : gauche</span>
-            <span>➡️ ou d : droite</span>
-            <span>⬇️ ou s : descendre</span>
+            <div class="text-left-side-bar">
+                <span>Z : rotate</span>
+                <span>E : stock</span>
+                <span>⬅️ ou q : gauche</span>
+                <span>➡️ ou d : droite</span>
+                <span>⬇️ ou s : descendre</span>
             <span>⏬ ou s : chute rapide</span>
+            </div>
         </div>
         <div class="mid-bar">
             <canvas id="game-canvas" width="400" height="600"></canvas>
@@ -38,7 +41,7 @@
         </div>
         <div class="right-side-bar">
             <canvas id="prev-canvas" width="90" height="90"></canvas>
-            <div>
+            <div class="text-right-side-bar">
                 <label for="">Lignes :</label>
                 <span class="linesSpan"></span>
             </div>
@@ -48,5 +51,38 @@
         <button class="delete"></button>
         Vous avez établi un nouveau  <strong>record !</strong>
     </div>
+    <div class="mobile-keyboard">
+        <div class="mobile-keyboard-row1">
+            <div class="mobile-key-z mobile-key">
+                <span class="material-symbols-outlined">
+                rotate_right
+                </span>
+            </div>
+            <div class="mobile-key-e mobile-key"
+            >
+            <span class="material-symbols-outlined">
+            view_module
+            </span>
+            </div>
+        </div>
+        <div class="mobile-keyboard-row2">
+            <div class="mobile-key-q mobile-key">
+                <span class="material-symbols-outlined">
+                west
+                </span>
+            </div>
+            <div class="mobile-key-s mobile-key">
+                <span class="material-symbols-outlined">
+                south
+                </span>
+            </div>
+            <div class="mobile-key-d mobile-key">
+                <span class="material-symbols-outlined">
+                east
+                </span>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

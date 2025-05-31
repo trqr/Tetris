@@ -276,6 +276,7 @@ function startGame(){
     stockCtx.clearRect(0, 0, stockCanvas.width, stockCanvas.height);
     landedBlocks = [];
     score = 0;
+    lines = 0;
     isGameOver = false;
     canvas.classList.remove("game-over");
     buttons.classList.remove('buttons-when-game-over');
