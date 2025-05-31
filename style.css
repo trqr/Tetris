@@ -13,6 +13,7 @@
     width: 100px;
     margin: 0 auto;
     margin-bottom: 50px;
+    border-radius: 10px;
 }
 
 #stock-canvas {
@@ -20,6 +21,7 @@
     width: 100px;
     margin: 0 auto;
     margin-bottom: 50px;
+    border-radius: 10px;
 }
 
 .mid-bar {
@@ -81,25 +83,33 @@ body {
 }
 
 .mobile-keyboard {
-    position: sticky;
+    position: fixed;
     bottom: 0px;
     margin-top: 0px;
     display: none;
     flex-direction: column;
     width: 90%;
     span {
+        border-radius: 10px;
+        background-color: rgba(128, 128, 128, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 50px;
         height: 50px;
         font-size: 40px;
+        margin: 0 5px;
     }
     .mobile-keyboard-row1 {
         display: flex;
         justify-content: space-between;
+        
     }
     .mobile-keyboard-row2 {
         display: flex;
         justify-content: center;
         margin-top: 30px;
+        padding-bottom: 10px;
     }
 }
 
@@ -122,18 +132,19 @@ body {
     }
 
     #stock-canvas {
-        bottom: -80px;
+        bottom: -130px;
         left: 10px;
     }
 
     #prev-canvas {
-        bottom: -80px;
+        bottom: -130px;
         right: 10px;
     }
 
     .text-left-side-bar, .text-right-side-bar{
-        display: none;
+        display: none !important;
     }
+
     #game-canvas {
         width: 90vw;
         max-width: 400px;

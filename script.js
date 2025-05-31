@@ -32,6 +32,12 @@ const linesSpan = document.querySelector('.linesSpan');
 const notif = document.querySelector('.notification');
 const buttons = document.querySelector('.buttons');
 
+const leftBtn = document.querySelector('#leftBtn');
+const downBtn = document.querySelector('#downBtn');
+const rightBtn = document.querySelector('#rightBtn');
+const rotateBtn = document.querySelector('#rotateBtn');
+const stockBtn = document.querySelector('#stockBtn');
+
 
 
 scoreSpan.innerText = `${score}`;
@@ -117,33 +123,41 @@ startBtn.addEventListener('click', () => {
 
 
 // //Keypress events
+function leftEvent(){
+    const canMoveLeft = currentShape.blocks.every(block => {
+        if (block[0] < -8 )
+            return false;
+        return !landedBlocks.find(bloc => bloc[0] === block[0]-1 && bloc[1] === block[1])
+        })
+        if (canMoveLeft) {
+            currentShape.blocks.forEach(block => {
+                    block[0]-= 1;
+                    draw();
+            });
+        }
+}
+
+function rightEvent(){
+    const canMoveRight = currentShape.blocks.every(block => {
+        if (block[0] > 9 )
+            return false;
+        return !landedBlocks.find(bloc => bloc[0] === block[0]+1 && bloc[1] === block[1])
+    })
+    if (canMoveRight) {
+        currentShape.blocks.forEach(block => {
+                block[0]+= 1;
+                draw();
+        });
+    }
+}
+
 document.addEventListener('keydown', (e) => {
     if (!isGameOver) {
         if (e.key === "ArrowLeft" || e.key === "q"){
-            const canMoveLeft = currentShape.blocks.every(block => {
-                if (block[0] < -8 )
-                    return false;
-                return !landedBlocks.find(bloc => bloc[0] === block[0]-1 && bloc[1] === block[1])
-            })
-            if (canMoveLeft) {
-                currentShape.blocks.forEach(block => {
-                        block[0]-= 1;
-                        draw();
-                });
-            }
+            leftEvent();
         }
         if (e.key === "ArrowRight" || e.key === "d"){
-            const canMoveRight = currentShape.blocks.every(block => {
-                if (block[0] > 9 )
-                    return false;
-                return !landedBlocks.find(bloc => bloc[0] === block[0]+1 && bloc[1] === block[1])
-            })
-            if (canMoveRight) {
-                currentShape.blocks.forEach(block => {
-                        block[0]+= 1;
-                        draw();
-                });
-            }
+            rightEvent();
         }
         if (e.key === "ArrowDown" || e.key === "s"){
             checkColision();
@@ -159,6 +173,24 @@ document.addEventListener('keydown', (e) => {
             stockingShape();
     }
 });
+
+
+// click mobile events
+leftBtn.addEventListener('click', () => !isGameOver ? leftEvent() : console.log("game is over !"));
+rightBtn.addEventListener('click', () => !isGameOver ? rightEvent() : console.log("game is over !"));
+downBtn.addEventListener('click', () => {
+    if (!isGameOver){
+            checkColision();
+            checkIfLanded();
+            currentShape.blocks.forEach(block => {
+                block[1]+= 1;
+            }); 
+            draw();
+    }
+});
+rotateBtn.addEventListener('click', () => !isGameOver ? rotateShape() : console.log("game is over !"));
+stockBtn.addEventListener('click', () => !isGameOver ? stockingShape() : console.log("game is over !"));
+
 
 
 function gameLoop(){
