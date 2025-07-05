@@ -37,6 +37,8 @@ const downBtn = document.querySelector('#downBtn');
 const rightBtn = document.querySelector('#rightBtn');
 const rotateBtn = document.querySelector('#rotateBtn');
 const stockBtn = document.querySelector('#stockBtn');
+const myAudio = document.createElement("audio");
+myAudio.src = "httpswwwyoutubecomwatchvnmccqxvbfym.mp3";
 
 
 
@@ -312,6 +314,7 @@ function startGame(){
     isGameOver = false;
     canvas.classList.remove("game-over");
     buttons.classList.remove('buttons-when-game-over');
+    myAudio.play();
     if (!isGameStarted){
         gameLoop();
     }
@@ -322,6 +325,8 @@ function startGame(){
 function CheckIfGameOver(){
     if (landedBlocks.find(block => block[1] === 1)){
         isGameOver = true;
+        myAudio.pause();
+        myAudio.currentTime = 0;
         isGameStarted = false;
         canvas.classList.add("game-over");
         buttons.classList.add('buttons-when-game-over');
